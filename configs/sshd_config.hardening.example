@@ -1,0 +1,12 @@
+# Fragmento de /etc/ssh/sshd_config aplicado en el nodo SOAR
+# Antes de aplicarlo: generar la llave en el equipo cliente y copiarla al servidor
+#   ssh-keygen -t ed25519 -C "kali-auditoria-soar"
+#   ssh-copy-id usuario@<IP_NODO>
+
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+
+# Aplicar:   sudo systemctl restart sshd
+# Verificar: ssh -o PubkeyAuthentication=no usuario@<IP_NODO>
+#            -> debe responder "Permission denied (publickey,...)"

@@ -1,0 +1,35 @@
+# /etc/keepalived/keepalived.conf — NODO RÉPLICA (BACKUP)
+# Valores genéricos: ajusta interfaz, IP virtual y contraseña a tu entorno.
+
+global_defs {
+    router_id SOAR_REPLICA
+    enable_script_security       # Requerido para ejecutar el health check
+    script_user root             # El health check necesita invocar al binario de Docker
+}
+
+vrrp_script chk_shuffle {
+    script "/etc/keepalived/check_shuffle.sh"
+    interval 2                   # Verifica cada 2 segundos
+    weight -60                   # Mismo valor que en el nodo principal
+}
+
+vrrp_instance VI_SOAR {
+    state BACKUP
+    interface ens160
+    virtual_router_id 51         # Debe ser idéntico en ambos nodos
+    priority 100
+    advert_int 1
+
+    authentication {
+        auth_type PASS
+        auth_pass CAMBIAR_ESTO
+    }
+
+    virtual_ipaddress {
+        10.0.100.100/24          # IP virtual (VIP) que consume el SOC
+    }
+
+    track_script {
+        chk_shuffle
+    }
+}

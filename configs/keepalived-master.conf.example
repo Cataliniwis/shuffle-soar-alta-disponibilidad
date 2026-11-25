@@ -1,0 +1,36 @@
+# /etc/keepalived/keepalived.conf — NODO PRINCIPAL (MASTER)
+# Valores genéricos: ajusta interfaz, IP virtual y contraseña a tu entorno.
+
+global_defs {
+    router_id SOAR_PRINCIPAL
+    enable_script_security       # Requerido para ejecutar el health check
+    script_user root             # El health check necesita invocar al binario de Docker
+}
+
+vrrp_script chk_shuffle {
+    script "/etc/keepalived/check_shuffle.sh"
+    interval 2                   # Verifica cada 2 segundos
+    weight -60                   # 150 - 60 = 90 < 100 (réplica) -> fuerza el failover
+                                 # Con -20 la prioridad quedaba en 130 y NUNCA conmutaba.
+}
+
+vrrp_instance VI_SOAR {
+    state MASTER
+    interface ens160
+    virtual_router_id 51         # Debe ser idéntico en ambos nodos
+    priority 150
+    advert_int 1
+
+    authentication {
+        auth_type PASS
+        auth_pass CAMBIAR_ESTO
+    }
+
+    virtual_ipaddress {
+        10.0.100.100/24          # IP virtual (VIP) que consume el SOC
+    }
+
+    track_script {
+        chk_shuffle
+    }
+}

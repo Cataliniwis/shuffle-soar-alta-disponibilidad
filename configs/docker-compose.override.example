@@ -1,0 +1,16 @@
+# Corrección aplicada en docker-compose.yml de Shuffle.
+# Docker publica los puertos mediante docker-proxy y se salta las reglas de firewalld:
+# OpenSearch (9200) y el backend (5001) quedaban expuestos hacia la red.
+# Solución: limitar esos puertos a la interfaz de loopback.
+
+services:
+  opensearch:
+    ports:
+      - "127.0.0.1:9200:9200"
+  backend:
+    ports:
+      - "127.0.0.1:${BACKEND_PORT}:5001"
+
+# Recrear los contenedores: docker compose up -d
+# Verificar desde la máquina de auditoría: nmap -p- <IP_NODO>
+# Resultado esperado: solo 22/tcp y 3001/tcp abiertos

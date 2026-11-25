@@ -1,0 +1,8 @@
+# /etc/fail2ban/jail.local
+# Requiere: dnf install -y epel-release && dnf install -y fail2ban fail2ban-firewalld fail2ban-selinux
+
+[sshd]
+enabled  = true
+maxretry = 3       # Máximo 3 intentos fallidos...
+findtime = 600     # ...dentro de una ventana de 10 minutos
+bantime  = 3600    # Bloqueo de 1 hora

@@ -1,0 +1,14 @@
+# Datos sensibles — nunca subir
+*.pem
+*.key
+*.ppk
+.aws/
+credentials
+*credentials*
+.env
+*.env
+whitelist.txt
+# Capturas y reportes crudos que puedan contener IPs/hosts reales
+*.pcap
+*.pcapng
+reportes_crudos/
